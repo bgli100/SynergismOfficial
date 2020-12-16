@@ -2,13 +2,13 @@ function challengeDisplay(i, changefocus, automated) {
     changefocus = (changefocus === null || changefocus === undefined) ? true : changefocus;
     if (changefocus) {
         challengefocus = i;
-        document.getElementById("challengeDetails").style.display = "block"
+        document.getElementById("oneChallengeDetails").style.display = "block"
     }
 
     let quarksMultiplier = 1;
     if (changefocus) {
         challengefocus = i;
-        document.getElementById("challengeDetails").style.display = "block";
+        document.getElementById("oneChallengeDetails").style.display = "block";
         triggerChallenge = i
     }
 
@@ -224,12 +224,12 @@ function challengeDisplay(i, changefocus, automated) {
         d.textContent = "Goal: Complete Challenge 10 [Sadistic Challenge I] " + format(challengeRequirement(i, player.challengecompletions[i])) + " times."
         e.textContent = "+50% Obtainium! Current: "
         f.textContent = "+12% Offerings! Current: "
-        g.textContent = "+1 Cube Blessing per opening! Current: "
+        g.textContent = "+1 Cube Tribute per opening! Current: "
         h.textContent = "Unlock 15 Researches, and unlock the mystical Spirit Power! Find these in the Runes tab."
         k.textContent = "Start <[(No Reincarnation)]>"
         l.textContent = "+" + format(50 * CalcECC('ascension', player.challengecompletions[12])) + "% Obtainium"
         m.textContent = "+" + format(12 * CalcECC('ascension', player.challengecompletions[12])) + "% Offerings"
-        n.textContent = "+" + format(CalcECC('ascension', player.challengecompletions[12])) + " additional Cube Blessings"
+        n.textContent = "+" + format(CalcECC('ascension', player.challengecompletions[12])) + " additional Cube Tributes"
     }
     if (i === 13 && challengefocus === 13) {
         a.textContent = "Tax+++ Challenge || " + player.challengecompletions[13] + "/" + format(maxChallenges) + " Completions"
@@ -260,7 +260,7 @@ function challengeDisplay(i, changefocus, automated) {
         n.textContent = "+" + format(200 * CalcECC('ascension', player.challengecompletions[14])) + " to Rune Caps"
     }
     if (i === 15 && challengefocus === 15) {
-        a.textContent = "SADISTIC CHALLENGE II || " + player.challengecompletions[15] + "/1 Completions"
+        a.textContent = "SADISTIC CHALLENGE II || " + player.challengecompletions[15] + "/9001 Completions"
         b.textContent = "The worst sin a man can do is making others suffer."
         c.textContent = "Ascend and reach the goal but you're FULLY corrupt and must stay that way."
         d.textContent = "Goal: 1e4T Coins, but get bonuses based on your best attempt."
@@ -321,7 +321,7 @@ function challengeDisplay(i, changefocus, automated) {
         (ella.textContent = "Auto Challenge Sweep [OFF]", ella.style.border = "2px solid red");
 }
 
-function getChallengeConditions() {
+function getChallengeConditions(i) {
     if (player.currentChallenge.reincarnation === 9) {
         rune1level = 1;
         rune2level = 1;
@@ -329,6 +329,13 @@ function getChallengeConditions() {
         rune4level = 1;
         rune5level = 1;
         player.crystalUpgrades = [0, 0, 0, 0, 0, 0, 0, 0]
+    }
+    prestigePointGain = new Decimal('0')
+    if (i >= 6){
+        transcendPointGain = new Decimal('0')
+    }
+    if (i >= 11){
+        reincarnationPointGain = new Decimal('0')
     }
     calculateRuneLevels();
 }
@@ -363,6 +370,7 @@ function calculateChallengeRequirementMultiplier(type, completions, special) {
             (completions >= 75) ?
                 requirementMultiplier *= Math.pow(1 + completions, 12) / Math.pow(75, 8) :
                 requirementMultiplier *= Math.pow(1 + completions, 2);
+            requirementMultiplier *= challenge15Rewards.transcendChallengeReduction
             return (requirementMultiplier)
         case "reincarnation":
             if (completions >= 60){
@@ -385,6 +393,7 @@ function calculateChallengeRequirementMultiplier(type, completions, special) {
             if (completions < 25){
             requirementMultiplier *= Math.min(Math.pow(1 + completions, 2), Math.pow(1.3797, completions));
             }
+            requirementMultiplier *= challenge15Rewards.reincarnationChallengeReduction
             return requirementMultiplier
         case "ascension":
             (completions >= 10) ?
@@ -427,7 +436,7 @@ function challengeRequirement(challenge, completion, special) {
     } else if (challenge <= 14) {
         return calculateChallengeRequirementMultiplier("ascension", completion, special)
     } else if (challenge === 15) {
-        return Decimal.pow(10, 1 * Math.pow(10, 12))
+        return Decimal.pow(10, 4 * Math.pow(10, 30))
     }
 }
 
@@ -495,7 +504,7 @@ if (player.researches[150] > 0 && player.autoChallengeRunning && (player.reincar
             autoChallengeTimerIncrement = 0;
         }
         if (player.currentChallenge.reincarnation === 0 && player.autoChallengeIndex > 5) {
-            while (player.challengecompletions[player.autoChallengeIndex] >= (25 + 5 * player.cubeUpgrades[29] + 2 * player.shopUpgrades.challengeExtension) || !player.autoChallengeToggles[player.autoChallengeIndex]) {
+            while (player.challengecompletions[player.autoChallengeIndex] >= (25 + 5 * player.cubeUpgrades[29] + 2 * player.shopUpgrades.challengeExtension + 5 * player.platonicUpgrades[5]) || !player.autoChallengeToggles[player.autoChallengeIndex]) {
                 player.autoChallengeIndex += 1
                 if (player.autoChallengeIndex > 10) {
                     player.autoChallengeIndex = 1;
